@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ember Hollow Coffee Roasters</title>
+<meta name="description" content="Small-batch coffee roasted weekly. Pick your roast, order beans, or visit the cafe.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#1f3a2e; --forest-2:#2c5242; --sage:#e4e9e1; --milk:#f8f9f4;
+  --crema:#c98a2b; --roast:#3a2418; --ink:#1c1f1c; --muted:#5d665f;
+  --bean:#b9854f;
+  --head:"Bricolage Grotesque","Helvetica Neue",Arial,sans-serif;
+  --body:"Newsreader",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--body);font-size:1.125rem;line-height:1.65;color:var(--ink);background:var(--milk)}
+h1,h2,h3{font-family:var(--head);line-height:1.05;letter-spacing:-.02em}
+a{color:inherit}
+img,svg{max-width:100%}
+:focus-visible{outline:3px solid var(--crema);outline-offset:3px}
+.wrap{width:min(1120px,92%);margin-inline:auto}
+section{padding:5.5rem 0}
+.btn{display:inline-block;font-family:var(--head);font-weight:500;font-size:1rem;padding:.85rem 1.5rem;border-radius:999px;border:2px solid var(--forest);background:var(--forest);color:var(--milk);text-decoration:none;cursor:pointer;transition:background .2s,color .2s}
+.btn:hover{background:var(--crema);border-color:var(--crema);color:var(--ink)}
+.btn.ghost{background:transparent;color:var(--forest)}
+.btn.ghost:hover{background:var(--forest);color:var(--milk);border-color:var(--forest)}
+ 
+/* header */
+header{position:sticky;top:0;z-index:20;background:rgba(248,249,244,.92);backdrop-filter:blur(8px);border-bottom:1px solid #d9ded4}
+.bar{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0}
+.logo{font-family:var(--head);font-weight:800;font-size:1.3rem;text-decoration:none;letter-spacing:-.03em}
+nav ul{display:flex;gap:1.75rem;list-style:none;align-items:center}
+nav a{text-decoration:none;font-family:var(--head);font-weight:500;font-size:.98rem}
+nav a:hover{color:var(--crema)}
+.cart{background:var(--forest);color:var(--milk);border:0;border-radius:999px;padding:.45rem 1rem;font-family:var(--head);font-size:.95rem;cursor:pointer}
+.menu-toggle{display:none;background:none;border:2px solid var(--forest);border-radius:8px;padding:.35rem .7rem;font-family:var(--head);cursor:pointer}
+
+/* hero */
+.hero{padding:4rem 0 5rem;background:var(--sage)}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:3rem;align-items:center}
+.hero h1{font-size:clamp(2.8rem,7vw,5.4rem);font-weight:800;color:var(--forest)}
+.hero p.lead{margin:1.4rem 0 2rem;max-width:34rem;color:var(--muted);font-size:1.25rem}
+.roast-box{background:var(--milk);border-radius:28px;padding:2rem;box-shadow:0 20px 50px -25px rgba(31,58,46,.45)}
+.bean-wrap{display:grid;place-items:center;height:200px}
+.bean{width:150px;height:150px;transition:transform .5s}
+.bean path.shell{fill:var(--bean);transition:fill .4s}
+.bean path.crease{fill:none;stroke:rgba(0,0,0,.35);stroke-width:5;stroke-linecap:round}
+.roast-name{font-family:var(--head);font-size:1.8rem;font-weight:800;color:var(--forest)}
+.roast-box input[type=range]{width:100%;margin:1rem 0 .3rem;accent-color:var(--crema)}
+.scale{display:flex;justify-content:space-between;font-family:var(--head);font-size:.85rem;color:var(--muted)}
+.notes{margin-top:1rem;color:var(--muted);min-height:3.3em}
+
+/* menu */
+.head{display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:1.5rem;margin-bottom:2.5rem}
+.head h2{font-size:clamp(2rem,4.5vw,3.2rem);color:var(--forest)}
+.tabs{display:flex;gap:.5rem;flex-wrap:wrap}
+.tab{font-family:var(--head);font-size:.95rem;padding:.5rem 1.1rem;border-radius:999px;border:2px solid var(--forest);background:transparent;cursor:pointer;color:var(--forest)}
+.tab[aria-pressed=true]{background:var(--forest);color:var(--milk)}
+.menu-list{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:0 3.5rem}
+.menu-list li{display:grid;grid-template-columns:1fr auto;gap:.2rem 1rem;padding:1.1rem 0;border-bottom:1px dashed #b9c1b5}
+.menu-list li[hidden]{display:none}
+.menu-list h3{font-size:1.2rem}
+.menu-list .price{font-family:var(--head);font-weight:800;color:var(--crema)}
+.menu-list p{grid-column:1/-1;color:var(--muted);font-size:1rem;line-height:1.45}
+
+/* story */
+.story{background:var(--forest);color:var(--milk)}
+.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+.story h2{font-size:clamp(2rem,4.5vw,3.4rem)}
+.story p{color:#d3dccf;margin-bottom:1.1rem}
+.facts{display:grid;gap:1.4rem}
+.fact{border-left:4px solid var(--crema);padding-left:1.2rem}
+.fact strong{display:block;font-family:var(--head);font-size:1.6rem}
+.fact span{color:#c2cdbf;font-size:1rem}
+
+/* shop */
+.beans{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem}
+.card{background:var(--sage);border-radius:22px;padding:1.6rem;display:flex;flex-direction:column;gap:.7rem}
+.card .sw{height:110px;border-radius:14px}
+.card h3{font-size:1.4rem;color:var(--forest)}
+.card p{color:var(--muted);font-size:1rem;line-height:1.5;flex:1}
+.card .row{display:flex;justify-content:space-between;align-items:center}
+.card .price{font-family:var(--head);font-weight:800;font-size:1.2rem}
+.card button{font-family:var(--head);padding:.55rem 1.1rem;border-radius:999px;border:2px solid var(--forest);background:transparent;color:var(--forest);cursor:pointer;transition:background .2s,color .2s}
+.card button:hover{background:var(--forest);color:var(--milk)}
+
+/* visit */
+.visit{background:var(--sage)}
+.visit-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem}
+.visit h2{font-size:clamp(2rem,4.5vw,3.2rem);color:var(--forest);margin-bottom:1.2rem}
+.hours{list-style:none;margin:1rem 0}
+.hours li{display:flex;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid #c5ccc1}
+form{display:grid;gap:1rem}
+label{font-family:var(--head);font-size:.95rem;font-weight:500;display:grid;gap:.35rem}
+input,textarea{font:inherit;padding:.8rem 1rem;border:2px solid #b9c1b5;border-radius:12px;background:var(--milk)}
+input:focus,textarea:focus{border-color:var(--forest);outline:none}
+.msg{font-family:var(--head);min-height:1.5em}
+.msg.ok{color:var(--forest-2)} .msg.err{color:#a33a1e}
+
+footer{background:var(--roast);color:#e8d8c8;padding:2.5rem 0;font-size:1rem}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translate(-50%,150%);background:var(--forest);color:var(--milk);font-family:var(--head);padding:.8rem 1.4rem;border-radius:999px;transition:transform .3s;z-index:30}
+.toast.show{transform:translate(-50%,0)}
+
+@media (max-width:860px){
+  .hero-grid,.story-grid,.visit-grid{grid-template-columns:1fr;gap:2.5rem}
+  .menu-list{grid-template-columns:1fr}
+  .beans{grid-template-columns:1fr}
+  .menu-toggle{display:block}
+  nav ul{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;background:var(--milk);padding:1.2rem 4%;gap:1rem;border-bottom:1px solid #d9ded4;align-items:flex-start}
+  nav ul.open{display:flex}
+  section{padding:4rem 0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="#top">Ember Hollow</a>
+    <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="navList">Menu</button>
+    <nav aria-label="Main">
+      <ul id="navList">
+        <li><a href="#menu">Cafe menu</a></li>
+        <li><a href="#story">Our story</a></li>
+        <li><a href="#shop">Buy beans</a></li>
+        <li><a href="#visit">Visit</a></li>
+        <li><button class="cart" id="cartBtn" type="button" aria-label="Bags in cart">Cart: <span id="cartCount">0</span></button></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>Roasted this week. In your cup by Friday.</h1>
+        <p class="lead">We roast small batches of single-origin coffee in our own shop and ship within 48 hours. Slide to find your roast.</p>
+        <a class="btn" href="#shop">Shop beans</a>
+        <a class="btn ghost" href="#menu">See the cafe menu</a>
+      </div>
+      <div class="roast-box" aria-live="polite">
+        <div class="bean-wrap">
+          <svg class="bean" id="bean" viewBox="0 0 100 100" role="img" aria-label="Coffee bean that darkens as roast level increases">
+            <path class="shell" d="M50 6C74 6 92 26 92 52S72 94 48 94 8 74 8 48 26 6 50 6Z"/>
+            <path class="crease" d="M34 14C54 34 40 56 58 70S66 88 62 92"/>
+          </svg>
+        </div>
+        <div class="roast-name" id="roastName">Medium</div>
+        <input type="range" id="roast" min="0" max="3" step="1" value="1" aria-label="Roast level">
+        <div class="scale"><span>Light</span><span>Medium</span><span>Medium-dark</span><span>Dark</span></div>
+        <p class="notes" id="roastNotes"></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="menu">
+    <div class="wrap">
+      <div class="head">
+        <h2>Cafe menu</h2>
+        <div class="tabs" role="group" aria-label="Filter menu">
+          <button class="tab" data-f="all" aria-pressed="true">All</button>
+          <button class="tab" data-f="hot" aria-pressed="false">Hot</button>
+          <button class="tab" data-f="cold" aria-pressed="false">Cold</button>
+          <button class="tab" data-f="bite" aria-pressed="false">Bites</button>
+        </div>
+      </div>
+      <ul class="menu-list" id="menuList">
+        <li data-c="hot"><h3>Espresso</h3><span class="price">$3.00</span><p>Double shot of our house blend. Dark chocolate and orange peel.</p></li>
+        <li data-c="hot"><h3>Flat white</h3><span class="price">$4.50</span><p>Double ristretto with silky steamed milk.</p></li>
+        <li data-c="hot"><h3>Pour-over</h3><span class="price">$5.00</span><p>Single origin of the week, brewed to order.</p></li>
+        <li data-c="hot"><h3>Cardamom latte</h3><span class="price">$5.25</span><p>Espresso, steamed milk and house cardamom syrup.</p></li>
+        <li data-c="cold"><h3>Cold brew</h3><span class="price">$4.75</span><p>Steeped 18 hours, served over ice. Smooth and low acid.</p></li>
+        <li data-c="cold"><h3>Iced oat latte</h3><span class="price">$5.00</span><p>Espresso, oat milk and ice.</p></li>
+        <li data-c="cold"><h3>Espresso tonic</h3><span class="price">$5.50</span><p>Tonic water, a twist of grapefruit and a double shot.</p></li>
+        <li data-c="bite"><h3>Butter croissant</h3><span class="price">$3.75</span><p>Baked each morning by a bakery two doors down.</p></li>
+        <li data-c="bite"><h3>Banana walnut loaf</h3><span class="price">$3.50</span><p>Moist, lightly spiced and best with a flat white.</p></li>
+        <li data-c="bite"><h3>Avocado toast</h3><span class="price">$7.50</span><p>Sourdough, lime, chili flakes and sea salt.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="story" id="story">
+    <div class="wrap story-grid">
+      <div>
+        <h2>We started with one small roaster and a lot of questions.</h2>
+      </div>
+      <div>
+        <p>Ember Hollow began in a garage with a five-kilo roaster. We wanted coffee that tasted like the farm it came from, not like a dark roast covering every flaw.</p>
+        <p>Today we buy directly from growers, pay above fair-trade prices and roast in small batches every week. Every bag carries its roast date so you always know how fresh it is.</p>
+        <div class="facts">
+          <div class="fact"><strong>12 farms</strong><span>Bought directly, with prices agreed before harvest.</span></div>
+          <div class="fact"><strong>5 kg batches</strong><span>Roasted Monday and Thursday, never stockpiled.</span></div>
+          <div class="fact"><strong>100% compostable</strong><span>Bags, labels and shipping fill.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="shop">
+    <div class="wrap">
+      <div class="head"><h2>Beans for home</h2></div>
+      <div class="beans">
+        <article class="card">
+          <div class="sw" style="background:#c9a06a"></div>
+          <h3>Highland Morning</h3>
+          <p>Ethiopia, light roast. Jasmine, peach and black tea. Great for pour-over.</p>
+          <div class="row"><span class="price">$16</span><button type="button" data-add="Highland Morning">Add bag</button></div>
+        </article>
+        <article class="card">
+          <div class="sw" style="background:#8a5a34"></div>
+          <h3>House Blend</h3>
+          <p>Colombia and Brazil, medium roast. Caramel, hazelnut and milk chocolate.</p>
+          <div class="row"><span class="price">$14</span><button type="button" data-add="House Blend">Add bag</button></div>
+        </article>
+        <article class="card">
+          <div class="sw" style="background:#3a2418"></div>
+          <h3>Midnight Ember</h3>
+          <p>Sumatra, dark roast. Cocoa, molasses and a hint of smoke. Built for espresso.</p>
+          <div class="row"><span class="price">$15</span><button type="button" data-add="Midnight Ember">Add bag</button></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="visit" id="visit">
+    <div class="wrap visit-grid">
+      <div>
+        <h2>Visit the roastery</h2>
+        <p>Watch a roast, taste a few coffees and take a bag home. Walk-ins welcome.</p>
+        <p style="margin-top:1rem"><strong>42 Ember Lane, Old Mill District</strong></p>
+        <ul class="hours">
+          <li><span>Monday to Friday</span><span>7:00 am to 6:00 pm</span></li>
+          <li><span>Saturday</span><span>8:00 am to 5:00 pm</span></li>
+          <li><span>Sunday</span><span>9:00 am to 3:00 pm</span></li>
+        </ul>
+      </div>
+      <form id="contactForm" novalidate>
+        <label>Name <input type="text" id="name" autocomplete="name" required></label>
+        <label>Email <input type="email" id="email" autocomplete="email" required></label>
+        <label>Message <textarea id="message" rows="4" required></textarea></label>
+        <button class="btn" type="submit">Send message</button>
+        <p class="msg" id="formMsg" role="status"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>&copy; <span id="year"></span> Ember Hollow Coffee Roasters</span>
+    <span>hello@emberhollow.example</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+// Roast selector
+const roasts = [
+  {name:"Light", color:"#c9a06a", notes:"Bright and floral. Citrus, stone fruit and tea-like sweetness."},
+  {name:"Medium", color:"#9a6a3c", notes:"Balanced and round. Caramel, nuts and soft chocolate."},
+  {name:"Medium-dark", color:"#6b4226", notes:"Rich and syrupy. Dark chocolate, toasted sugar and spice."},
+  {name:"Dark", color:"#3a2418", notes:"Bold and smoky. Cocoa, molasses and a bittersweet finish."}
+];
+const roast = document.getElementById("roast");
+function updateRoast(){
+  const r = roasts[roast.value];
+  document.getElementById("roastName").textContent = r.name;
+  document.getElementById("roastNotes").textContent = r.notes;
+  document.getElementById("bean").style.setProperty("--bean", r.color);
+  document.getElementById("bean").style.transform = "rotate(" + (roast.value * 18) + "deg)";
+}
+roast.addEventListener("input", updateRoast);
+updateRoast();
+
+// Menu filter
+const tabs = document.querySelectorAll(".tab");
+const items = document.querySelectorAll("#menuList li");
+tabs.forEach(t => t.addEventListener("click", () => {
+  tabs.forEach(x => x.setAttribute("aria-pressed", x === t));
+  items.forEach(li => { li.hidden = t.dataset.f !== "all" && li.dataset.c !== t.dataset.f; });
+}));
+
+// Cart + toast
+let count = 0;
+const toast = document.getElementById("toast");
+let toastTimer;
+function showToast(text){
+  toast.textContent = text;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+}
+document.querySelectorAll("[data-add]").forEach(b => b.addEventListener("click", () => {
+  count++;
+  document.getElementById("cartCount").textContent = count;
+  showToast(b.dataset.add + " added to cart");
+}));
+document.getElementById("cartBtn").addEventListener("click", () => {
+  showToast(count ? count + " bag" + (count > 1 ? "s" : "") + " in your cart" : "Your cart is empty");
+});
+
+// Mobile nav
+const toggle = document.getElementById("menuToggle");
+const navList = document.getElementById("navList");
+toggle.addEventListener("click", () => {
+  const open = navList.classList.toggle("open");
+  toggle.setAttribute("aria-expanded", open);
+});
+navList.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+  navList.classList.remove("open");
+  toggle.setAttribute("aria-expanded", "false");
+}));
+
+// Contact form
+document.getElementById("contactForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const msg = document.getElementById("formMsg");
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const text = document.getElementById("message").value.trim();
+  if (!name || !text) { msg.className = "msg err"; msg.textContent = "Enter your name and a message."; return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { msg.className = "msg err"; msg.textContent = "Enter a valid email address."; return; }
+  msg.className = "msg ok";
+  msg.textContent = "Thanks, " + name + ". We will reply within one business day.";
+  e.target.reset();
+});
+
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
